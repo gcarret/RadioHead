@@ -21,12 +21,14 @@
 #include <bcm2835.h>
 #include <stdio.h>
 
+#include "RH_RF22.h"
 #include "RH_RF69.h"
 #include "RH_RF95.h"
 
 uint8_t readRegister(uint8_t cs_pin, uint8_t addr)
 {
   char spibuf[2];
+  //spibuf[0] = addr & 0x7F;
   spibuf[0] = addr & 0x7F;
   spibuf[1] = 0x00;
 
@@ -61,7 +63,8 @@ void readModuleVersion(uint8_t cs_pin)
   // RFM9x version is reg 0x42
   printf("Checking register(0x42) with CS=GPIO%02d", cs_pin);
   getModuleName( readRegister( cs_pin, 0x42) );
-
+  printf("Checking register(0x01) with CS=GPIO%02d", cs_pin);
+  getModuleName( readRegister( cs_pin, 0x01) );
   // RFM69 version is reg 0x10
   printf("Checking register(0x10) with CS=GPIO%02d", cs_pin);
   getModuleName ( readRegister( cs_pin, 0x10) ) ;
@@ -78,7 +81,7 @@ int main(int argc, char **argv)
   } else {
     // List of all CS line where module can be connected
     // GPIO6, GPIO8/CE0, GPIO7/CE1, GPIO26
-    uint8_t CS_pins[] = {6, 7, 8, 26};
+    uint8_t CS_pins[] = {6, 7, 8,24, 26};
     uint8_t i;
 
     // Init SPI
