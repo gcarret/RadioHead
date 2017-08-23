@@ -33,7 +33,7 @@ void sigint_handler(int signal)
 
 void setup()
 { 
-    wiringPiSetupGpio();
+//    wiringPiSetupGpio();
 
     if (!rf22.init()) 
     {
