@@ -76,13 +76,58 @@ bool RH_RF22::init()
     if (!RHSPIDriver::init())
 	return false;
 
+
+
+#ifndef RH_RF69_IRQLESS
     // Determine the interrupt number that corresponds to the interruptPin
     int interruptNumber = digitalPinToInterrupt(_interruptPin);
     if (interruptNumber == NOT_AN_INTERRUPT)
-	return false;
+    return false;
 #ifdef RH_ATTACHINTERRUPT_TAKES_PIN_NUMBER
     interruptNumber = _interruptPin;
 #endif
+#endif // ndef RH_RF69_IRQLESS
+
+    // Get the device type and check it
+    // This also tests whether we are really connected to a device
+    // My test devices return 0x24
+    _deviceType = spiRead(RH_RF69_REG_10_VERSION);
+    if (_deviceType == 00 ||
+    _deviceType == 0xff)
+    return false;
+
+#ifndef RH_RF69_IRQLESS
+
+    // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
+    // ARM M4 requires the below. else pin interrupt doesn't work properly.
+    // On all other platforms, its innocuous, belt and braces
+    pinMode(_interruptPin, INPUT); 
+
+    // Set up interrupt handler
+    // Since there are a limited number of interrupt glue functions isr*() available,
+    // we can only support a limited number of devices simultaneously
+    // ON some devices, notably most Arduinos, the interrupt pin passed in is actuallt the 
+    // interrupt number. You have to figure out the interruptnumber-to-interruptpin mapping
+    // yourself based on knwledge of what Arduino board you are running on.
+    if (_myInterruptIndex == 0xff)
+    {
+    // First run, no interrupt allocated yet
+    if (_interruptCount <= RH_RF69_NUM_INTERRUPTS)
+        _myInterruptIndex = _interruptCount++;
+    else
+        return false; // Too many devices, not enough interrupt vectors
+    }
+    _deviceForInterrupt[_myInterruptIndex] = this;
+    if (_myInterruptIndex == 0)
+    attachInterrupt(interruptNumber, isr0, RISING);
+    else if (_myInterruptIndex == 1)
+    attachInterrupt(interruptNumber, isr1, RISING);
+    else if (_myInterruptIndex == 2)
+    attachInterrupt(interruptNumber, isr2, RISING);
+    else
+    return false; // Too many devices, not enough interrupt vectors
+
+#endif // ndef RH_RF69_IRQLESS
 
     // Software reset the device
     reset();
@@ -105,30 +150,6 @@ bool RH_RF22::init()
     // an interrupt occurs
     spiWrite(RH_RF22_REG_05_INTERRUPT_ENABLE1, RH_RF22_ENTXFFAEM | RH_RF22_ENRXFFAFULL | RH_RF22_ENPKSENT | RH_RF22_ENPKVALID | RH_RF22_ENCRCERROR | RH_RF22_ENFFERR);
     spiWrite(RH_RF22_REG_06_INTERRUPT_ENABLE2, RH_RF22_ENPREAVAL);
-
-    // Set up interrupt handler
-    // Since there are a limited number of interrupt glue functions isr*() available,
-    // we can only support a limited number of devices simultaneously
-    // On some devices, notably most Arduinos, the interrupt pin passed in is actually the 
-    // interrupt number. You have to figure out the interruptnumber-to-interruptpin mapping
-    // yourself based on knowledge of what Arduino board you are running on.
-    if (_myInterruptIndex == 0xff)
-    {
-	// First run, no interrupt allocated yet
-	if (_interruptCount <= RH_RF22_NUM_INTERRUPTS)
-	    _myInterruptIndex = _interruptCount++;
-	else
-	    return false; // Too many devices, not enough interrupt vectors
-    }
-    _deviceForInterrupt[_myInterruptIndex] = this;
-    if (_myInterruptIndex == 0)
-	attachInterrupt(interruptNumber, isr0, FALLING);
-    else if (_myInterruptIndex == 1)
-	attachInterrupt(interruptNumber, isr1, FALLING);
-    else if (_myInterruptIndex == 2)
-	attachInterrupt(interruptNumber, isr2, FALLING);
-    else
-	return false; // Too many devices, not enough interrupt vectors
 
     setModeIdle();
 

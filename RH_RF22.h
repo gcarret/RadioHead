@@ -10,6 +10,18 @@
 #include <RHGenericSPI.h>
 #include <RHSPIDriver.h>
 
+
+// If you don't want to use interupts (mainly to win one I/O pin) then
+// you just need to uncomment this line, if you're on Raspberry PI 
+// it will be set automaticly below
+//#define RH_RF69_IRQLESS
+#if (RH_PLATFORM == RH_PLATFORM_RASPI)
+// No IRQ used on Raspberry PI
+#ifndef RH_RF95_IRQLESS
+#define RH_RF95_IRQLESS
+#endif
+#endif // RH_PLATFORM_RASPI PI
+
 // This is the maximum number of interrupts the library can support
 // Most Arduinos can handle 2, Megas can handle more
 #define RH_RF22_NUM_INTERRUPTS 3
