@@ -43,6 +43,8 @@ void getModuleName(uint8_t version)
   printf(" => ");
   if (version==00 || version==0xFF )
     printf("Nothing!\n");
+  else if (version == 0x06)
+    printf("Si4432");
   else if (version == 0x12)
     printf("SX1276 RF95/96");
   else if (version == 0x22)
