@@ -78,7 +78,7 @@ bool RH_RF22::init()
 
 
 
-#ifndef RH_RF69_IRQLESS
+#ifndef RH_RF22_IRQLESS
     // Determine the interrupt number that corresponds to the interruptPin
     int interruptNumber = digitalPinToInterrupt(_interruptPin);
     if (interruptNumber == NOT_AN_INTERRUPT)
@@ -91,12 +91,12 @@ bool RH_RF22::init()
     // Get the device type and check it
     // This also tests whether we are really connected to a device
     // My test devices return 0x24
-    _deviceType = spiRead(RH_RF69_REG_10_VERSION);
+    _deviceType = spiRead(RH_RF22_REG_01_VERSION_CODE);
     if (_deviceType == 00 ||
     _deviceType == 0xff)
     return false;
 
-#ifndef RH_RF69_IRQLESS
+#ifndef RH_RF22_IRQLESS
 
     // Add by Adrien van den Bossche <vandenbo@univ-tlse2.fr> for Teensy
     // ARM M4 requires the below. else pin interrupt doesn't work properly.
@@ -112,7 +112,7 @@ bool RH_RF22::init()
     if (_myInterruptIndex == 0xff)
     {
     // First run, no interrupt allocated yet
-    if (_interruptCount <= RH_RF69_NUM_INTERRUPTS)
+    if (_interruptCount <= RH_RF22_NUM_INTERRUPTS)
         _myInterruptIndex = _interruptCount++;
     else
         return false; // Too many devices, not enough interrupt vectors

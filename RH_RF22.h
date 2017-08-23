@@ -17,8 +17,8 @@
 //#define RH_RF69_IRQLESS
 #if (RH_PLATFORM == RH_PLATFORM_RASPI)
 // No IRQ used on Raspberry PI
-#ifndef RH_RF95_IRQLESS
-#define RH_RF95_IRQLESS
+#ifndef RH_RF22_IRQLESS
+#define RH_RF22_IRQLESS
 #endif
 #endif // RH_PLATFORM_RASPI PI
 
