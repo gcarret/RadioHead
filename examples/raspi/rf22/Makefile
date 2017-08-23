@@ -17,7 +17,7 @@ RasPi.o: $(RADIOHEADBASE)/RHutil/RasPi.cpp
 RasPiRH.o: RasPiRH.cpp
 				$(CC) $(CFLAGS) -c $(INCLUDE) $<
 
-RH_NRF24.o: $(RADIOHEADBASE)/RH_NRF24.cpp
+RH_RF22.o: $(RADIOHEADBASE)/RH_RF22.cpp
 				$(CC) $(CFLAGS) -c $(INCLUDE) $<
 
 RHMesh.o: $(RADIOHEADBASE)/RHMesh.cpp
