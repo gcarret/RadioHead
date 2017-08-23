@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
+#include <math.h>  
 
 #define BOARD_SI4432  //Here we define the board type
 #define RF_FREQUENCY  433.00
