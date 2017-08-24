@@ -116,7 +116,7 @@ void loop()
 
 int main(int argc, char **argv)
 { 
-    signal(SIGINT, sigint_handler);
+    signal(SIGINT, sig_handler);
 
     setup();
 
