@@ -22,7 +22,7 @@
 
 #include <RH_RF22.h>
 
-RH_RF22 rf22(RPI_V2_GPIO_P1_22, RPI_V2_GPIO_P1_24);;
+RH_RF22 rf22(RPI_V2_GPIO_P1_22, RPI_V2_GPIO_P1_24);
 
 int run = 1;
 
@@ -35,7 +35,46 @@ void sigint_handler(int signal)
 void setup()
 { 
 //    wiringPiSetupGpio();
+ unsigned long led_blink = 0;
+  
+  signal(SIGINT, sig_handler);
+  printf( "%s\n", __BASEFILE__);
 
+  if (!bcm2835_init()) {
+    fprintf( stderr, "%s bcm2835_init() Failed\n\n", __BASEFILE__ );
+    return 1;
+  }
+  
+  printf( "RF22 CS=GPIO%d", RF_CS_PIN);
+
+#ifdef RF_LED_PIN
+  pinMode(RF_LED_PIN, OUTPUT);
+  digitalWrite(RF_LED_PIN, HIGH );
+#endif
+
+#ifdef RF_IRQ_PIN
+  printf( ", IRQ=GPIO%d", RF_IRQ_PIN );
+  // IRQ Pin input/pull down
+  pinMode(RF_IRQ_PIN, INPUT);
+  bcm2835_gpio_set_pud(RF_IRQ_PIN, BCM2835_GPIO_PUD_DOWN);
+  // Now we can enable Rising edge detection
+  bcm2835_gpio_ren(RF_IRQ_PIN);
+#endif
+  
+#ifdef RF_RST_PIN
+  printf( ", RST=GPIO%d", RF_RST_PIN );
+  // Pulse a reset on module
+  pinMode(RF_RST_PIN, OUTPUT);
+  digitalWrite(RF_RST_PIN, LOW );
+  bcm2835_delay(150);
+  digitalWrite(RF_RST_PIN, HIGH );
+  bcm2835_delay(100);
+#endif
+
+#ifdef RF_LED_PIN
+  printf( ", LED=GPIO%d", RF_LED_PIN );
+  digitalWrite(RF_LED_PIN, LOW );
+#endif
     if (!rf22.init()) 
     {
         fprintf(stderr, "Init failed\n");
