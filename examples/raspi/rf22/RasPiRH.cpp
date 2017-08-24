@@ -24,13 +24,18 @@
 
 RH_RF22 rf22(RPI_V2_GPIO_P1_22, RPI_V2_GPIO_P1_24);
 
+//Flag for Ctrl-C
+volatile sig_atomic_t force_exit = false;
+
 int run = 1;
 
 /* Signal the end of the software */
-void sigint_handler(int signal)
+void sig_handler(int sig)
 {
-    run = 0;
+  printf("\n%s Break received, exiting!\n", __BASEFILE__);
+  force_exit=true;
 }
+
 
 void setup()
 { 
