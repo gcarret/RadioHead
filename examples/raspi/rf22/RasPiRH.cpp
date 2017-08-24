@@ -37,7 +37,7 @@ void sig_handler(int sig)
 }
 
 
-void setup()
+int setup()
 { 
 //    wiringPiSetupGpio();
  unsigned long led_blink = 0;
