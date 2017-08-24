@@ -35,7 +35,7 @@ RHDatagram.o: $(RADIOHEADBASE)/RHDatagram.cpp
 RHHardwareSPI.o: $(RADIOHEADBASE)/RHHardwareSPI.cpp
 				$(CC) $(CFLAGS) -c $(INCLUDE) $<
 
-RHNRFSPIDriver.o: $(RADIOHEADBASE)/RHNRFSPIDriver.cpp
+RHSPIDriver.o: $(RADIOHEADBASE)/RHSPIDriver.cpp
 				$(CC) $(CFLAGS) -c $(INCLUDE) $<
 
 RHSPIDriver.o: $(RADIOHEADBASE)/RHSPIDriver.cpp
@@ -47,7 +47,7 @@ RHGenericDriver.o: $(RADIOHEADBASE)/RHGenericDriver.cpp
 RHGenericSPI.o: $(RADIOHEADBASE)/RHGenericSPI.cpp
 				$(CC) $(CFLAGS) -c $(INCLUDE) $<
 
-RasPiRH: RasPiRH.o RH_RF22.o RHMesh.o RHRouter.o RHReliableDatagram.o RHDatagram.o RasPi.o RHHardwareSPI.o RHNRFSPIDriver.o RHGenericDriver.o RHGenericSPI.o
+RasPiRH: RasPiRH.o RH_RF22.o RHMesh.o RHRouter.o RHReliableDatagram.o RHDatagram.o RasPi.o RHHardwareSPI.o RHSPIDriver.o RHGenericDriver.o RHGenericSPI.o
 				$(CC) $^ $(LIBS) -o RasPiRH
 
 clean:
