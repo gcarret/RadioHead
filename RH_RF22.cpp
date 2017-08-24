@@ -4,6 +4,7 @@
 // $Id: RH_RF22.cpp,v 1.27 2017/01/12 23:58:00 mikem Exp $
 
 #include <RH_RF22.h>
+#include <cmath>
 
 // Interrupt vectors for the 2 Arduino interrupt pins
 // Each interrupt can be handled by a different instance of RH_RF22, allowing you to have
@@ -90,7 +91,7 @@ bool RH_RF22::init()
 
     // Get the device type and check it
     // This also tests whether we are really connected to a device
-    // My test devices return 0x24
+    // My test devices return 0x06
     _deviceType = spiRead(RH_RF22_REG_01_VERSION_CODE);
     if (_deviceType == 00 ||
     _deviceType == 0xff)
