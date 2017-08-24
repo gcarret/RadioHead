@@ -4,7 +4,7 @@
 # http://www.airspayce.com/mikem/bcm2835/
 
 CC            = g++
-CFLAGS        = -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY
+CFLAGS        = -DRASPBERRY_PI -DBCM2835_NO_DELAY_COMPATIBILITY -v -da -Q
 LIBS          = -lbcm2835
 RADIOHEADBASE = ../../..
 INCLUDE       = -I$(RADIOHEADBASE)
